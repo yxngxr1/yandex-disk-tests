@@ -12,7 +12,7 @@ PUT /v1/disk/resources
 '''
 
 @pytest.mark.positive
-class TestCreateResourcePositive:
+class TestResourcesPutPositive:
 
     def test_create_folder_success(self, client: YaDiskApiClient, unique_resource_path):
         """Успешное создание папки"""
@@ -51,7 +51,7 @@ class TestCreateResourcePositive:
 
 
 @pytest.mark.negative
-class TestCreateResourceNegative:
+class TestResourcesPutNegative:
 
     def test_create_folder_already_exists(self, client: YaDiskApiClient, created_folder_path):
         """Создание папки, которая уже существует"""

@@ -20,6 +20,23 @@ def assert_schema(response, model: Type[BaseModel]) -> dict:
     :param model: модель, по которой будет проверяться схема json
     :raises ValidationError: если тело ответа не соответствует схеме
     """
+
+    # 1. Пустое тело
+    if not response.content:
+        raise AssertionError(
+            f"Ожидалось тело ответа по схеме {model.__name__}, "
+            f"но получен пустой ответ (status={response.status_code})"
+        )
+
+    # 2. Тело не JSON
+    try:
+        body = response.json()
+    except ValueError as e:
+        raise AssertionError(
+            f"Ожидался JSON по схеме {model.__name__}, "
+            f"но тело не является JSON: {response.text!r}"
+        )
+
     body = response.json()
     if isinstance(body, list):
         for item in body:

@@ -31,3 +31,9 @@ class ErrorResponse(BaseModel):
     description: str
     message: str
     details: Optional[Any] = None
+
+class DeleteResourceResponse(BaseModel):
+    """DeleteResource Response Object - Содержит URL ресурса."""
+    href: Optional[str] = None
+    method: Optional[str] = None
+    templated: Optional[bool] = None

@@ -48,11 +48,18 @@ class YaDiskApiClient(BaseApiClient):
                     **params}
         )
 
+    def delete_from_trash(self, path: str = '/', **params):
+        """DELETE /v1/disk/trash/resources - удалить ресурс из корзины по path. При path='/' - полная очистка"""
+        return self._delete(
+            Endpoints.TRASH_RESOURCES, 
+            params={"path": path, **params}
+        )
+    
     def copy_resource(self, 
                       from_path: str, 
                       path: str, 
                       **params):
-        """POST /v1/disk/resources/copy — скопировать ресурс из from_path в path."""
+        """POST /v1/disk/resources/copy - скопировать ресурс из from_path в path."""
         return self._post(
             f"{Endpoints.RESOURCES}/copy",
             params={"from": from_path, 
@@ -61,12 +68,12 @@ class YaDiskApiClient(BaseApiClient):
         )
 
     def get_upload_link(self, path: str, **params):
-        """GET /v1/disk/resources/upload — получить ссылку для загрузки файла."""
+        """GET /v1/disk/resources/upload - получить ссылку для загрузки файла."""
         return self._get(
             f"{Endpoints.RESOURCES}/upload",
             params={"path": path, **params}
         )
 
     def upload_file_by_link(self, href: str, file_content: bytes):
-        """PUT <href> — загрузить содержимое файла по полученной ссылке."""
+        """PUT <href> - загрузить содержимое файла по полученной ссылке."""
         return self.session.put(href, data=file_content)
