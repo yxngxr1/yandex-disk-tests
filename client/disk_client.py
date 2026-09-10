@@ -57,5 +57,16 @@ class YaDiskApiClient(BaseApiClient):
             f"{Endpoints.RESOURCES}/copy",
             params={"from": from_path, 
                     "path": path, 
-                    **params},
+                    **params}
         )
+
+    def get_upload_link(self, path: str, **params):
+        """GET /v1/disk/resources/upload — получить ссылку для загрузки файла."""
+        return self._get(
+            f"{Endpoints.RESOURCES}/upload",
+            params={"path": path, **params}
+        )
+
+    def upload_file_by_link(self, href: str, file_content: bytes):
+        """PUT <href> — загрузить содержимое файла по полученной ссылке."""
+        return self.session.put(href, data=file_content)

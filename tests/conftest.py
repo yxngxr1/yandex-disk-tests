@@ -7,7 +7,7 @@ def pytest_configure(config):
 
 @pytest.fixture(scope="session")
 def client():
-    """Создаёт клиент API на всю сессию тестов и закрывает его по окончании."""
+    """Создаёт и возвращает клиент API на всю сессию тестов и закрывает его по окончании."""
     client = YaDiskApiClient(Config.BASE_URL, Config.TOKEN)
     yield client
     client.close()
@@ -23,3 +23,27 @@ def created_folder_path(client: YaDiskApiClient, unique_resource_path):
     client.create_folder(unique_resource_path)
     yield unique_resource_path
     client.delete_resource(unique_resource_path, permanently=True)
+
+@pytest.fixture
+def uploaded_file_txt_by_href_path(client: YaDiskApiClient, unique_resource_path):
+    """Создаёт небольшой файл до теста и удаляет его после (без корзины). Возвращает path."""
+    file_path = f"{unique_resource_path}.txt"
+    upload_response = client.get_upload_link(file_path, overwrite=True)
+    href = upload_response.json()["href"]
+    client.upload_file_by_link(href, b"TEXT EXAMPLE TEXT")
+    yield file_path
+    client.delete_resource(file_path, permanently=True)
+
+
+@pytest.fixture
+def deleted_resource_path(client: YaDiskApiClient, unique_resource_path):
+    """Удаляет ресурс если он существует на диске. Возвращает path которого нет на диске."""
+    client.delete_resource(unique_resource_path)
+    return unique_resource_path
+
+@pytest.fixture
+def client_without_auth():
+    """API-клиент без OAuth-токена — для проверки неавторизованных запросов"""
+    client = YaDiskApiClient(base_url=Config.BASE_URL, token="")
+    yield client
+    client.close()
