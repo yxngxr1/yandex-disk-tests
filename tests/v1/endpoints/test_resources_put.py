@@ -11,6 +11,8 @@ PUT /v1/disk/resources
 Создание папки
 '''
 
+
+@pytest.mark.endpoint
 @pytest.mark.positive
 class TestResourcesPutPositive:
 
@@ -24,7 +26,7 @@ class TestResourcesPutPositive:
         assert body["method"] == "GET"
         assert unique_resource_path.split("/")[-1] in body["href"]
 
-        client.delete_resource(unique_resource_path)  # удаляем созданную папку
+        client.delete_resource(unique_resource_path)
 
     def test_create_folder_with_fields(self, client: YaDiskApiClient, unique_resource_path):
         """Создание папки с фильтром полей в ответе"""
@@ -50,6 +52,7 @@ class TestResourcesPutPositive:
         assert meta.json()["path"].endswith(nested.split("/")[-1])
 
 
+@pytest.mark.endpoint
 @pytest.mark.negative
 class TestResourcesPutNegative:
 
@@ -58,6 +61,13 @@ class TestResourcesPutNegative:
         response = client.create_folder(created_folder_path)
         
         assert_status_code(response, 409)
+        assert_schema(response, ErrorResponse)
+
+    def test_create_folder_in_not_existing_parent(self, client: YaDiskApiClient, unique_resource_path):
+        """Создание вложенной папки в несуществующую"""
+        nested = f"TUTNETPAPKI/nested_{unique_resource_path}"
+        response = client.create_folder(nested)
+        assert_status_code(response, 404)
         assert_schema(response, ErrorResponse)
 
     def test_create_folder_without_auth(self, client_without_auth, unique_resource_path):

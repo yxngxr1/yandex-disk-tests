@@ -34,13 +34,6 @@ def uploaded_file_txt_by_href_path(client: YaDiskApiClient, unique_resource_path
     yield file_path
     client.delete_resource(file_path, permanently=True)
 
-
-@pytest.fixture
-def deleted_resource_path(client: YaDiskApiClient, unique_resource_path):
-    """Удаляет ресурс если он существует на диске. Возвращает path которого нет на диске."""
-    client.delete_resource(unique_resource_path)
-    return unique_resource_path
-
 @pytest.fixture
 def client_without_auth():
     """API-клиент без OAuth-токена — для проверки неавторизованных запросов"""

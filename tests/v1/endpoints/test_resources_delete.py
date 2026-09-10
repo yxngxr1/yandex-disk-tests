@@ -12,6 +12,7 @@ DELETE /v1/disk/resources
 '''
 
 
+@pytest.mark.endpoint
 @pytest.mark.positive
 class TestResourcesDeletePositive:
 
@@ -38,6 +39,7 @@ class TestResourcesDeletePositive:
         assert_status_code(meta, 404)
 
 
+@pytest.mark.endpoint
 @pytest.mark.negative
 class TestResourcesDeleteNegative:
 

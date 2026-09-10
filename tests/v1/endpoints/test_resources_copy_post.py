@@ -10,6 +10,7 @@ POST /v1/disk/resources/copy
 '''
 
 
+@pytest.mark.endpoint
 @pytest.mark.positive
 class TestResourcesCopyPositive:
 
@@ -68,6 +69,7 @@ class TestResourcesCopyPositive:
         client.delete_resource(copy_path, permanently=True)
 
 
+@pytest.mark.endpoint
 @pytest.mark.negative
 class TestResourcesCopyNegative:
 

@@ -1,3 +1,5 @@
+import time
+
 from .base_client import BaseApiClient
 from .endpoints import Endpoints
 
@@ -77,3 +79,20 @@ class YaDiskApiClient(BaseApiClient):
     def upload_file_by_link(self, href: str, file_content: bytes):
         """PUT <href> - загрузить содержимое файла по полученной ссылке."""
         return self.session.put(href, data=file_content)
+
+    def get_operation_status(self, operation_id: str):
+        return self._get(f"{Endpoints.OPERATIONS}/{operation_id}")
+
+    def wait_for_operation(self, operation_id: str, timeout: int = 60, interval: float = 5) -> str:
+        """
+        Ожидает завершения асинхронной операции.
+        Возвращает финальный статус: 'success' или 'failed'.
+        """
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            response = self.get_operation_status(operation_id)
+            status = response.json()["status"]
+            if status != "in-progress":
+                return status
+            time.sleep(interval)
+        raise TimeoutError(f"Операция {operation_id} не завершилась за {timeout} секунд")

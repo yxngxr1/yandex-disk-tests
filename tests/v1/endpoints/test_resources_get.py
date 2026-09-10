@@ -9,6 +9,8 @@ GET /v1/disk/resources
 Получение метаинформации о файле или каталоге"""
 '''
 
+
+@pytest.mark.endpoint
 @pytest.mark.positive
 class TestResourcesGetPositive:
     
@@ -16,7 +18,7 @@ class TestResourcesGetPositive:
     def test_get_existing_folder(self, 
                                  client: YaDiskApiClient, 
                                  created_folder_path: str):
-        """Получение мета существующей папки"""
+        """Получение существующей папки"""
         exp_path = created_folder_path
 
         response = client.get_resource_meta(exp_path)
@@ -30,7 +32,7 @@ class TestResourcesGetPositive:
     def test_get_existing_file(self, 
                                client: YaDiskApiClient, 
                                uploaded_file_txt_by_href_path: str):
-        """Получение мета существующего файла"""
+        """Получение существующего файла"""
         exp_path = uploaded_file_txt_by_href_path
 
         response = client.get_resource_meta(exp_path)
@@ -44,7 +46,7 @@ class TestResourcesGetPositive:
 
     def test_get_resource_with_fields_filter(self, 
                                              client: YaDiskApiClient):
-        """Получение меты, с фильтром полей в ответе"""
+        """Получение с фильтром полей в ответе"""
         exp_fields = "name,path"
         response = client.get_resource_meta("/", fields=exp_fields)
         
@@ -64,6 +66,7 @@ class TestResourcesGetPositive:
         assert data["path"] == "disk:/"
 
 
+@pytest.mark.endpoint
 @pytest.mark.negative
 class TestResourcesGetNegative:
 

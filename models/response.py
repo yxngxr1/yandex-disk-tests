@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class LinkResponse(BaseModel):
     """Link Response Object - Содержит URL ресурса."""
