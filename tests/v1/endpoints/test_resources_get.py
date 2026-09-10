@@ -24,7 +24,7 @@ class TestResourcesGetPositive:
         assert_status_code(response, 200)
         body = assert_schema(response, ResourceResponse)
         assert body["type"] == "dir"
-        assert body["path"] == exp_path
+        assert body["path"] == f'disk:/{exp_path}'
 
     @pytest.mark.high
     def test_get_existing_file(self, 
@@ -38,13 +38,13 @@ class TestResourcesGetPositive:
         assert_status_code(response, 200)
         body = assert_schema(response, ResourceResponse)
         assert body["type"] == "file"
-        assert body["path"] == exp_path
+        assert body["path"] == f'disk:/{exp_path}'
         assert body["size"] > 0
         assert body["md5"] is not None
 
     def test_get_resource_with_fields_filter(self, 
                                              client: YaDiskApiClient):
-        """Получение только выбранных полей"""
+        """Получение меты, с фильтром полей в ответе"""
         exp_fields = "name,path"
         response = client.get_resource_meta("/", fields=exp_fields)
         
@@ -67,11 +67,9 @@ class TestResourcesGetPositive:
 @pytest.mark.negative
 class TestResourcesGetNegative:
 
-    def test_get_not_existing_resource(self, 
-                                 client: YaDiskApiClient, 
-                                 deleted_resource_path: str):
+    def test_get_not_existing_resource(self, client: YaDiskApiClient, unique_resource_path: str):
         """Получение несуществующего ресурса"""
-        response = client.get_resource_meta(deleted_resource_path)
+        response = client.get_resource_meta(unique_resource_path)
 
         assert_status_code(response, 404)
         assert_schema(response, ErrorResponse)
@@ -81,6 +79,7 @@ class TestResourcesGetNegative:
         response = client.get_resource_meta(path=None)
 
         assert_status_code(response, 400)
+        assert_schema(response, ErrorResponse)
 
     @pytest.mark.critical
     def test_get_without_auth(self, client_without_auth):

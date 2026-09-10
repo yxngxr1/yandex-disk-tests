@@ -13,7 +13,7 @@ def assert_status_code(response: Response, expected_code):
     assert expected_code == response.status_code
 
 
-def assert_schema(response, model: Type[BaseModel]) -> ResourceResponse:
+def assert_schema(response, model: Type[BaseModel]) -> dict:
     """
     Проверяет тело ответа на соответствие его схеме механизмами pydantic
     :param response: ответ от сервера

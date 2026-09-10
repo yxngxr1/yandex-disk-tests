@@ -15,7 +15,7 @@ def client():
 @pytest.fixture
 def unique_resource_path() -> str:
     """Возвращает уникальное имя для нового ресурса"""
-    return f"disk:/test_resource_{uuid.uuid4()}"
+    return f"test_resource_{uuid.uuid4()}"
 
 @pytest.fixture
 def created_folder_path(client: YaDiskApiClient, unique_resource_path):
